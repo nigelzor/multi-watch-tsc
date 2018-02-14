@@ -22,20 +22,21 @@ interface Project {
 function runAllProjects(projects: Project[]) {
     projects.forEach((p, i) => {
         const { name, configFile } = p;
-        const colored = chalk.keyword(colors[i % colors.length]);
+        const root = path.dirname(configFile);
+        const heading = chalk.bold.keyword(colors[i % colors.length])(name);
 
         const reporter = (diagnostic: ts.Diagnostic) => {
             const message = ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n");
-            const level = ['Warning', 'Error', ''][diagnostic.category];
+            const level = [`warning TS${diagnostic.code}: `, `error TS${diagnostic.code}: `, ''][diagnostic.category];
             let location = '';
             if (diagnostic.file) {
                 let { line, character } = diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start!);
-                location = ` ${diagnostic.file.fileName} (${line + 1},${character + 1})`;
+                location = `${path.relative(root, diagnostic.file.fileName)}(${line + 1},${character + 1}): `;
             }
-            const sep = (level || location) ? ': ' : '';
-            console.log(`${colored(name)} - ${level}${location}${sep}${message}`);
+            const style = level ? (a: string) => a : chalk.gray;
+            console.log(heading, style(`${location}${level}${message}`));
         };
-        const host = ts.createWatchCompilerHost(configFile, null, ts.sys, null, reporter, reporter);
+        const host = ts.createWatchCompilerHost(configFile, undefined, ts.sys, undefined, reporter, reporter);
         ts.createWatchProgram(host);
     });
 }
