@@ -34,7 +34,8 @@ function runAllProjects(projects: Project[]) {
                 location = `${path.relative(root, diagnostic.file.fileName)}(${line + 1},${character + 1}): `;
             }
             const style = level ? (a: string) => a : chalk.gray;
-            console.log(heading, style(`${location}${level}${message}`));
+            const time = style(new Date().toLocaleTimeString());
+            console.log(time, heading, style(`${location}${level}${message}`));
         };
         const host = ts.createWatchCompilerHost(configFile, undefined, ts.sys, undefined, reporter, reporter);
         ts.createWatchProgram(host);
