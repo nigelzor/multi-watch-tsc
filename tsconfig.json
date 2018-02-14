@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2016",
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "declaration": true,
+    "moduleResolution": "node",
+    "rootDir": "src",
+    "outDir": "dist"
+  }
+}
