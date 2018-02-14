@@ -9,6 +9,8 @@ motivation:
    - spawning dozens of `tsc` instances simultaneously slows things to a crawl
  - avoids vm overhead of running tsc per-project
 
+of course, the tradeoff is that it loses any speedup from parallel compilation
+
 usage:
  - clone this repository
  - `npm install` / `yarn install`

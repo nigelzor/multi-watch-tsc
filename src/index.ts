@@ -2,6 +2,8 @@ import * as ts from 'typescript'
 import * as fs from 'fs';
 import * as path from 'path';
 import chalk from 'chalk';
+import createPkgsGraph from 'pkgs-graph';
+import graphSequencer = require('graph-sequencer')
 
 const colors = ["cyan", "magenta", "blue", "yellow", "green", "red"];
 
@@ -12,6 +14,26 @@ function resolveConfigFile(configFile: string) {
     }
     const name = path.dirname(configFile);
     return { name, configFile };
+}
+
+function sortProjects(projects: Project[]) {
+    const decorated = projects.map((project) => {
+        const root = path.dirname(project.configFile);
+        const manifest = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf-8'));
+        return {
+            project: project,
+            path: root,
+            manifest
+        };
+    });
+    const pgraph = createPkgsGraph(decorated);
+    const dgraph = new Map(Object.keys(pgraph).map((p) => [p, pgraph[p].dependencies]) as [string, string[]][]);
+    const sequence = graphSequencer({
+        graph: dgraph,
+        groups: [Object.keys(pgraph)],
+    });
+    const groups: Project[][] = sequence.chunks.map((chunk) => chunk.map((name) => (pgraph[name] as any).project));
+    return groups.reduce((m, g) => m.concat(g));
 }
 
 interface Project {
@@ -45,7 +67,8 @@ function runAllProjects(projects: Project[]) {
 
 export function runAll(paths: string[]) {
     const projects = paths.map(resolveConfigFile);
-    runAllProjects(projects);
+    const sorted = sortProjects(projects);
+    runAllProjects(sorted);
 }
 
 if (require.main === module) {
