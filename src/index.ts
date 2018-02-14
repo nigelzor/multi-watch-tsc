@@ -1,11 +1,11 @@
-import * as ts from 'typescript'
+import * as ts from 'typescript';
 import * as fs from 'fs';
 import * as path from 'path';
 import chalk from 'chalk';
 import createPkgsGraph from 'pkgs-graph';
-import graphSequencer = require('graph-sequencer')
+import graphSequencer = require('graph-sequencer');
 
-const colors = ["cyan", "magenta", "blue", "yellow", "green", "red"];
+const colors = ['cyan', 'magenta', 'blue', 'yellow', 'green', 'red'];
 
 function resolveConfigFile(configFile: string) {
     const stat = fs.statSync(configFile);
@@ -23,7 +23,7 @@ function sortProjects(projects: Project[]) {
         return {
             project: project,
             path: root,
-            manifest
+            manifest,
         };
     });
     const pgraph = createPkgsGraph(decorated);
@@ -48,7 +48,7 @@ function runAllProjects(projects: Project[]) {
         const heading = chalk.bold.keyword(colors[i % colors.length])(name);
 
         const reporter = (diagnostic: ts.Diagnostic) => {
-            const message = ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n");
+            const message = ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n');
             const level = [`warning TS${diagnostic.code}: `, `error TS${diagnostic.code}: `, ''][diagnostic.category];
             let location = '';
             if (diagnostic.file) {
@@ -64,7 +64,6 @@ function runAllProjects(projects: Project[]) {
     });
 }
 
-
 export function runAll(paths: string[]) {
     const projects = paths.map(resolveConfigFile);
     const sorted = sortProjects(projects);
@@ -73,5 +72,5 @@ export function runAll(paths: string[]) {
 
 if (require.main === module) {
     const files = process.argv.slice(2);
-    runAll(files)
+    runAll(files);
 }
