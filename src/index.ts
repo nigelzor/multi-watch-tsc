@@ -5,7 +5,7 @@ import chalk from 'chalk';
 import createPkgsGraph from 'pkgs-graph';
 import graphSequencer = require('graph-sequencer');
 
-const colors = ['cyan', 'magenta', 'blue', 'yellow', 'green', 'red'];
+const colors = [chalk.cyan, chalk.magenta, chalk.blue, chalk.yellow, chalk.green, chalk.red];
 
 function resolveConfigFile(configFile: string) {
     const stat = fs.statSync(configFile);
@@ -45,7 +45,7 @@ function runAllProjects(projects: Project[]) {
     projects.forEach((p, i) => {
         const { name, configFile } = p;
         const root = path.dirname(configFile);
-        const heading = chalk.bold.keyword(colors[i % colors.length])(name);
+        const heading = colors[i % colors.length].bold(name);
 
         const reporter = (diagnostic: ts.Diagnostic) => {
             const message = ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n');
