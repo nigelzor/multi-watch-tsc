@@ -26,13 +26,15 @@ function sortProjects(projects: Project[]) {
             manifest,
         };
     });
-    const pgraph = createPkgsGraph(decorated);
+    const { graph: pgraph } = createPkgsGraph(decorated);
     const dgraph = new Map(Object.keys(pgraph).map((p) => [p, pgraph[p].dependencies]) as [string, string[]][]);
     const sequence = graphSequencer({
         graph: dgraph,
         groups: [Object.keys(pgraph)],
     });
-    const groups: Project[][] = sequence.chunks.map((chunk) => chunk.map((name) => (pgraph[name] as any).project));
+    const groups: Project[][] = sequence.chunks.map((chunk) => chunk.map((name) => {
+        return decorated.find((d) => d.path === name)!.project;
+    }));
     return groups.reduce((m, g) => m.concat(g));
 }
 
