@@ -1,6 +1,6 @@
 {
   "name": "multi-watch-tsc",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "bin": "dist/index.js",
   "main": "dist/index.js",
