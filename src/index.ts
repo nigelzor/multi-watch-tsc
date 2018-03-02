@@ -1,3 +1,4 @@
+#!/usr/bin/env node --max_old_space_size=4096
 import * as ts from 'typescript';
 import * as fs from 'fs';
 import * as path from 'path';

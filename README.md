@@ -12,6 +12,5 @@ motivation:
 of course, the tradeoff is that it loses any speedup from parallel compilation
 
 usage:
- - clone this repository
- - `npm install` / `yarn install`
- - in your workspace, run `TSC_NONPOLLING_WATCHER=1 node --max_old_space_size=4096 ../multi-watch-tsc/dist/index.js packages/*/tsconfig.json`
+ - `npm i -g multi-watch-tsc` / `yarn global add multi-watch-tsc`
+ - in your workspace, run `TSC_NONPOLLING_WATCHER=1 multi-watch-tsc packages/*/tsconfig.json`
