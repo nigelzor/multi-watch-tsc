@@ -52,7 +52,7 @@ function runAllProjects(projects: Project[]) {
 
         const reporter = (diagnostic: ts.Diagnostic) => {
             const message = ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n');
-            const level = [`warning TS${diagnostic.code}: `, `error TS${diagnostic.code}: `, ''][diagnostic.category];
+            const level = [`warning TS${diagnostic.code}: `, `error TS${diagnostic.code}: `, '', ''][diagnostic.category];
             let location = '';
             if (diagnostic.file) {
                 let { line, character } = diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start!);
