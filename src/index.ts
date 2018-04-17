@@ -1,10 +1,10 @@
 #!/usr/bin/env node --max_old_space_size=4096
-import * as ts from 'typescript';
-import * as fs from 'fs';
-import * as path from 'path';
+import ts from 'typescript';
+import fs from 'fs';
+import path from 'path';
 import chalk from 'chalk';
 import createPkgsGraph from 'pkgs-graph';
-import graphSequencer = require('graph-sequencer');
+import graphSequencer from 'graph-sequencer';
 
 const colors = [chalk.cyan, chalk.magenta, chalk.blue, chalk.yellow, chalk.green, chalk.red];
 
