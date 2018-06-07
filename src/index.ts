@@ -36,7 +36,7 @@ function sortProjects(projects: Project[]) {
     const groups: Project[][] = sequence.chunks.map((chunk) => chunk.map((name) => {
         return decorated.find((d) => d.path === name)!.project;
     }));
-    return groups.reduce((m, g) => m.concat(g));
+    return groups.reduce((m, g) => m.concat(g), []);
 }
 
 interface Project {
