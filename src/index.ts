@@ -1,10 +1,10 @@
 #!/usr/bin/env node --max_old_space_size=4096
-import ts from 'typescript';
 import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
 import createPkgsGraph from 'pkgs-graph';
 import graphSequencer from 'graph-sequencer';
+import Worker from 'jest-worker';
 
 const colors = [chalk.cyan, chalk.magenta, chalk.blue, chalk.yellow, chalk.green, chalk.red];
 
@@ -33,10 +33,11 @@ function sortProjects(projects: Project[]) {
         graph: dgraph,
         groups: [Object.keys(pgraph)],
     });
-    const groups: Project[][] = sequence.chunks.map((chunk) => chunk.map((name) => {
-        return decorated.find((d) => d.path === name)!.project;
-    }));
-    return groups.reduce((m, g) => m.concat(g), []);
+    return sequence.chunks.map((chunk) =>
+        chunk.map((name) => {
+            return decorated.find((d) => d.path === name)!.project;
+        })
+    );
 }
 
 interface Project {
@@ -44,27 +45,24 @@ interface Project {
     configFile: string;
 }
 
-function runAllProjects(projects: Project[]) {
-    projects.forEach((p, i) => {
-        const { name, configFile } = p;
-        const root = path.dirname(configFile);
-        const heading = colors[i % colors.length].bold(name);
-
-        const reporter = (diagnostic: ts.Diagnostic) => {
-            const message = ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n');
-            const level = [`warning TS${diagnostic.code}: `, `error TS${diagnostic.code}: `, '', ''][diagnostic.category];
-            let location = '';
-            if (diagnostic.file) {
-                let { line, character } = diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start!);
-                location = `${path.relative(root, diagnostic.file.fileName)}(${line + 1},${character + 1}): `;
-            }
-            const style = level ? (a: string) => a : chalk.gray;
-            const time = style(new Date().toLocaleTimeString());
-            console.log(time, heading, style(`${location}${level}${message}`));
-        };
-        const host = ts.createWatchCompilerHost(configFile, undefined, ts.sys, undefined, reporter, reporter);
-        ts.createWatchProgram(host);
+async function runAllProjects(projects: Project[][]) {
+    let pi = 0;
+    const worker = new Worker(require.resolve('./worker'), {
+        forkOptions: {
+            stdio: [0, 1, 2, 'ipc'],
+        },
     });
+
+    for (const generation of projects) {
+        await Promise.all(
+            generation.map((p) => {
+                const { name, configFile } = p;
+                const heading = colors[pi++ % colors.length].bold(name);
+
+                return (worker as any).compileAndWatch(configFile, heading);
+            })
+        );
+    }
 }
 
 export function runAll(paths: string[]) {

@@ -4,7 +4,7 @@ multi-watch-tsc
 a replacement for `lerna run --stream --parallel`
 
 motivation:
- - runs the first compile synchronously, then watches in parallel
+ - runs the first compile in order, spawning additional workers when appropriate
    - when projects have inter-dependencies, ordering is important
    - spawning dozens of `tsc` instances simultaneously slows things to a crawl
  - avoids vm overhead of running tsc per-project

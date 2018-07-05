@@ -13,3 +13,16 @@ declare module 'graph-sequencer' {
     function graphSequencer<T>(opts: Options<T>): Result<T>;
     export = graphSequencer;
 }
+
+declare module 'jest-worker' {
+    import { Readable } from 'stream';
+
+    class Worker {
+        constructor(path: string, options?: object);
+        getStdout(): Readable;
+        getStderr(): Readable;
+        end(): void;
+    }
+
+    export default Worker;
+}
