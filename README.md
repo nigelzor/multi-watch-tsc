@@ -1,4 +1,4 @@
-multi-watch-tsc
+multi-watch-tsc [![Build Status](https://travis-ci.org/nigelzor/multi-watch-tsc.svg?branch=master)](https://travis-ci.org/nigelzor/multi-watch-tsc)
 ===============
 
 a replacement for `lerna run --stream --parallel`
