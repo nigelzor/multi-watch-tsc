@@ -14,3 +14,4 @@ of course, the tradeoff is that it loses any speedup from parallel compilation
 usage:
  - `npm i -g multi-watch-tsc` / `yarn global add multi-watch-tsc`
  - in your workspace, run `TSC_NONPOLLING_WATCHER=1 multi-watch-tsc packages/*/tsconfig.json`
+ - you may also want to set `NODE_OPTIONS=--max_old_space_size=4096` if you're compiling a large project
