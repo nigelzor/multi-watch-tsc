@@ -3,6 +3,8 @@ multi-watch-tsc [![Build Status](https://travis-ci.org/nigelzor/multi-watch-tsc.
 
 a replacement for `lerna run --stream --parallel`
 
+in typescript 3.3 and above, just use `tsc --build --watch` instead
+
 motivation:
  - runs the first compile in order, spawning additional workers when appropriate
    - when projects have inter-dependencies, ordering is important
